@@ -2,6 +2,7 @@ package com.example.apifxejemplo;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
+import org.json.JSONArray;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,7 +17,17 @@ public class MainViewController {
     protected void update() {
         HttpClient cliente = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://fakestoreapi.com/products")).build();
-        cliente.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> System.out.println(response)).join();
+        cliente.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> {
+                    if (response.statusCode() == 200) {
+                        JSONArray dataArray = new JSONArray(response.body());
+                        System.out.println(response.body());
+                    }
+                })
+                .join();
+
+
         listView.getItems().add(new Product());
+
+
     }
 }
