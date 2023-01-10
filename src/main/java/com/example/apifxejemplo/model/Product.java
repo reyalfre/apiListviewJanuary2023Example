@@ -1,4 +1,4 @@
-package com.example.apifxejemplo;
+package com.example.apifxejemplo.model;
 
 public class Product {
     private int id;
