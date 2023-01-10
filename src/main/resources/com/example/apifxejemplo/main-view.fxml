@@ -10,6 +10,6 @@
     </padding>
    <children>
       <ListView fx:id="listView" prefHeight="200.0" prefWidth="200.0" />
-      <Button mnemonicParsing="false" onAction="#update" text="Button" />
+      <Button fx:id="button" mnemonicParsing="false" onAction="#update" text="Button" />
    </children>
 </VBox>

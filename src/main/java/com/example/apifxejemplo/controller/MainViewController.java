@@ -1,7 +1,9 @@
 package com.example.apifxejemplo.controller;
 
 import com.example.apifxejemplo.model.Product;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,14 +12,19 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.DoubleSummaryStatistics;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class MainViewController {
     @FXML
     private ListView<Product> listView;
+    @FXML
+    private Button button;
 
     @FXML
     protected void update() {
+        button.setDisable(true);
         HttpClient cliente = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://fakestoreapi.com/products")).build();
 
@@ -38,8 +45,21 @@ public class MainViewController {
 
                 )));
             }
+            button.setDisable(false);
+            System.out.println("Productos: " + listView.getItems().stream().count());
+            System.out.println("Categorias: " + listView.getItems().stream().map(Product::getCategory).distinct().count());
+            System.out.println("Categorias: " + listView.getItems().stream().collect(Collectors.groupingBy(x -> x.getCategory(), Collectors.counting())));
+
+            listView.getItems().stream().map(Product::getCategory).distinct().forEach(category -> System.out.println(category+": "+listView.getItems().stream().filter(product -> product.getCategory().equals(category)).count()));
+
+            DoubleSummaryStatistics estadisticas = listView.getItems().stream().mapToDouble(Product::getPrice).summaryStatistics();
+            System.out.println(estadisticas.getMax());
+            System.out.println(estadisticas.getMin());
+            System.out.println(estadisticas.getAverage());
+            System.out.println(estadisticas.getSum());
         });
-    }}
+    }
+}
 
             /*cliente.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> {
                         if (response.statusCode() == 200) {
