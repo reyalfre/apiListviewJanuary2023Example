@@ -25,53 +25,33 @@ public class MainViewController {
 
     @FXML
     protected void update() {
-        Runnable task =()->{
-        button.setDisable(true);
-        HttpClient cliente = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://fakestoreapi.com/products")).build();
+        Runnable task = () -> {
+            button.setDisable(true);
+            HttpClient cliente = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://fakestoreapi.com/products")).build();
 
-        /*HttpResponse<String> response = null;
-        try {
-            response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 200) {
-                createProductList((HttpResponse) response);
-                prinStatistics();
+            HttpResponse<String> response = null;
+            try {
+                response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+                if (response.statusCode() == 200) {
+                    createProductList((HttpResponse) response);
+                    printStatistics();
+
+                }
+                Platform.runLater(() -> {
+                    button.setDisable(false);
+                });
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
 
             }
-            Platform.runLater(()->{button.setDisable(false);});
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-
-        }
-        //return null;
-    };
-   // new Thread(task).start();*/
-
-
-    HttpResponse<String> response = null;
-            try {
-        response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
-    } catch (IOException e) {
-        throw new RuntimeException(e);
-    } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-    }
-            if (response.statusCode() == 200) {
-        createProductList(response);
-        printStatistics();
-    }
-            Platform.runLater(() ->
-                    button.setDisable(false));
-
-
-};
+            //return null;
+        };
         new Thread(task).start();
-                }
+    }
 
 
-
-
-    private void createProductList(HttpResponse <String> response) {
+    private void createProductList(HttpResponse<String> response) {
         //System.out.println(response.body);
         JSONArray dataArray = new JSONArray(response.body());
         dataArray.forEach(data -> listView.getItems().add(new Product(
